@@ -99,6 +99,7 @@ Now comes the authentication for Docker Hub. To log into Docker Hub in the workf
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 ```
  And these are the secrets in github:
+ 
  ![](https://cdn.discordapp.com/attachments/1069302114620276918/1117952334140551228/Afbeelding2.png)
  
  The file that you want to use to build your docker image is the .jar file in your project. JAR stands for Java ARchive. It’s a file format based on the popular ZIP file format and is used for collecting many files into one. In maven you can run: 
