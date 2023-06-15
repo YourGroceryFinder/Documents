@@ -102,7 +102,40 @@ createApp(App).use(bootstrap).use(
     })
 ).mount('#app')
 ```
+Now that the login should be working, lets go continue with the next steps:
+Getting and sending the acces token.
 
+Because we have our API's protected you want to send an acces token with you call to the API to ensure that its authenticated. 
+First you need to get the token. You do that by calling the Auth0 function ```js getAccessTokenSilently() ``` like this:
+```js
+      const token = await this.$auth0.getAccessTokenSilently();
+```
+Now that you have reveived the token, you want to add it to your API call. You do this by adding it in your header like this.
+```js
+axios.post('~/api/search/GetProductsBySearch', this.productName, {
+            Headers: {
+              Authorization: 'Bearer ' + token
+            }
+          })
+```
+
+The total method should look something like this:
+```js
+ async GetAllResults(){
+      const token = await this.$auth0.getAccessTokenSilently();
+          axios.post('~/api/search/GetProductsBySearch', this.productName, {
+            Headers: {
+              Authorization: 'Bearer ' + token
+            }
+          })
+          .then(response =>{
+              this.products = response.data;
+          })
+          .catch(error => {
+            console.error(error);
+          })
+    }
+```
 
 ### Back-end
 
