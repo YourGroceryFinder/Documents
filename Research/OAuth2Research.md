@@ -179,13 +179,13 @@ public class SecurityConfig {
 }
 ```
 
-First you want to enable web security for this application. You do that with by putting ```java @EnableWebSecurity ``` before you make your class.
-Then before making your Security filter you want to put ```java @Bean ``` This means that the method will create a bean that will be managed by the Spring container.
+First you want to enable web security for this application. You do that with by putting ``` @EnableWebSecurity ``` before you make your class.
+Then before making your Security filter you want to put ``` @Bean ``` This means that the method will create a bean that will be managed by the Spring container.
 
-Next you want to define the method ```Java SecurityFilterChain filterChain(HttpSecurity http) throws Exception ```. This method defines the security filter chain that is responsible for processing and enforcing the security rules.
+Next you want to define the method ``` SecurityFilterChain filterChain(HttpSecurity http) throws Exception ```. This method defines the security filter chain that is responsible for processing and enforcing the security rules.
 
-Now lets get to the security rules. First you want to state ```java http.authorizeHttpRequests ```. This will sttart the configuration of authorizing HTTP requests.
-After that come the ```jave .requestMatchers()``` In these you want to specify which endpoint needs what level of authorization. ```java /GetAllProducts ``` Needs to be authenticated while ```java .hello ``` Doesnt.
+Now lets get to the security rules. First you want to state ``` http.authorizeHttpRequests ```. This will sttart the configuration of authorizing HTTP requests.
+After that come the ``` .requestMatchers()``` In these you want to specify which endpoint needs what level of authorization. ``` /GetAllProducts ``` Needs to be authenticated while ``` .hello ``` Doesnt.
 Next you want to enable cors and after that you want to enable OAuth 2.0 resource server support with JWT as the authentication mechanism. Meaning you want to receive a valid token.
 
 And the final step is to return the configured HttpSecurity Object.
