@@ -138,13 +138,54 @@ The total method should look something like this:
 ```
 
 ### Back-end
-
+In the backend we want to make sure we have the right dependenys installed in the pom.xml file. The one that you want to look for is the dependency for OAuth2 which looks like this:
 ```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-oauth2-client</artifactId>
-</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
 ```
- 
-Make sure to put this at the top of all dependencies because it didn’t work when I put it at the bottom. 
-This dependency makes it so that when you try to make a call to any endpoint it goes to a login screen when the user is not authenticated yet. It is not connected yet to any Authentication server so that will be then next step. You can still login without an authentication server, by using user as username and use the given password from the console as password.
+Next we go to the application.properties or the application.yml file. In this file we want to set the recourse server to auth0 by doing this.
+application.properties:
+```
+spring.security.oauth2.resourceserver.jwt.issuer-uri=https://dev-oempr7he.eu.auth0.com/
+```
+application.yml:
+```yml
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issur-uri: https://dev-oempr7he.eu.auth0.com/  
+```
+Next is creating the security config file. In our case its called the SecurityConfig
+
+```java
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        http
+                .authorizeHttpRequests ()
+                .requestMatchers ("/GetAllProducts").authenticated()
+                .requestMatchers ("/GetProductsBySearch").authenticated()
+                .requestMatchers("/hello").permitAll()
+                .and().cors()
+                .and().oauth2ResourceServer().jwt();
+        return http.build();
+    }
+}
+```
+
+First you want to enable web security for this application. You do that with by putting ```java @EnableWebSecurity ``` before you make your class.
+Then before making your Security filter you want to put ```java @Bean ``` This means that the method will create a bean that will be managed by the Spring container.
+
+Next you want to define the method ```Java SecurityFilterChain filterChain(HttpSecurity http) throws Exception ```. This method defines the security filter chain that is responsible for processing and enforcing the security rules.
+
+Now lets get to the security rules. First you want to state ```java http.authorizeHttpRequests ```. This will sttart the configuration of authorizing HTTP requests.
+After that come the ```jave .requestMatchers()``` In these you want to specify which endpoint needs what level of authorization. ```java /GetAllProducts ``` Needs to be authenticated while ```java .hello ``` Doesnt.
+Next you want to enable cors and after that you want to enable OAuth 2.0 resource server support with JWT as the authentication mechanism. Meaning you want to receive a valid token.
+
+And the final step is to return the configured HttpSecurity Object.
